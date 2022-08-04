@@ -10,7 +10,7 @@ export default function CustomInput({ name, label, handleChangeState }: Props) {
   return (
     <>
       <Input
-        onChangeText={(text) => handleChangeState(name, text)}
+        onChangeText={(text) => handleChangeState(text)}
         label={label}
         secureTextEntry={name.includes('password') ? true : false}
         autoCorrect={false}

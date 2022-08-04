@@ -17,7 +17,7 @@ export default function SignupScreen({ navigation }: any) {
   const handleSubmit = async ({ username, email, password, passwordConfirmation }: SignupProps) => {
     try {
       await signup({ username, email, password, passwordConfirmation })
-
+      navigation.navigate('Login')
     } catch (error) {
       console.log(error)
     }

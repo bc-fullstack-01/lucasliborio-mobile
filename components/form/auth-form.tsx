@@ -33,11 +33,14 @@ const reducer = (state: any, actions: ActionType) => {
       return { ...state, [actions.payload.name]: actions.payload.value }
   }
 }
-export default function AuthForm({ title, formArr, handleSubmit, navigation, btnText, linkText, to}: Props) {
+export default function AuthForm({ title, formArr, handleSubmit, navigation, btnText, linkText, to }: Props) {
   const initialState = formArr.reduce((acc, value: InputProps) => ({ ...acc, [value.name]: '' }), {})
   const [state, dispatch] = useReducer(reducer, initialState)
-  const handleChangeState = (name: string, value: string) => {
-    dispatch({ type: 'changeState', payload: { name, value } })
+  
+  const handleChangeState = (name: string) => {
+    return (value: string) => {
+      dispatch({ type: 'changeState', payload: { name, value } })
+    }
   }
   console.log(state)
   return (
@@ -51,7 +54,7 @@ export default function AuthForm({ title, formArr, handleSubmit, navigation, btn
           key={index}
           name={inputs.name}
           label={inputs.label}
-          handleChangeState={handleChangeState}
+          handleChangeState={handleChangeState(inputs.name)}
         />
       ))}
       <Button
