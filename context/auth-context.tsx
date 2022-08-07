@@ -3,7 +3,7 @@ import server from "../api/server";
 import jwtDecode from 'jwt-decode'
 import { SignupProps } from "../screens/login/signup-screen";
 import { LoginProps } from "../screens/login/login-screen";
-import SecureStore from 'expo-secure-store'
+import { getItemAsync, setItemAsync } from 'expo-secure-store'
 import Navigate from "../root-navigation";
 
 
@@ -11,10 +11,12 @@ interface IAuthContext {
   token: string
   username: string
   profileId: string
-  errMessage?: string | null
+  errMessage?: string | null,
+  isLoading: boolean
   clearErrorMessage: () => void
   login: ({ email, password }: LoginProps) => Promise<void>
   signup: ({ username, email, password, passwordConfirmation }: SignupProps) => Promise<void>
+  tryLocalLogin(): any
 }
 interface TokenJWT {
   profileId: string,
@@ -28,7 +30,7 @@ interface Action {
 const reducer = (state: any, action: Action) => {
   switch (action.type) {
     case "login":
-      return { ...state, ...action.payload, errMessage: null }
+      return { ...state, ...action.payload, errMessage: null, isLoading: false}
     case "signup":
       return { ...state, errMessage: null }
     case "add_error":
@@ -43,7 +45,7 @@ const reducer = (state: any, action: Action) => {
 const AuthContext = createContext({} as IAuthContext)
 
 const AuthContextProvider = ({ children }: { children: ReactElement }) => {
-  const defaultValue = { token: null, username: null, profileId: null }
+  const defaultValue = { token: null, username: null, profileId: null, isLoading: true}
   const [state, dispatch] = useReducer(reducer, defaultValue)
   console.log('CONTEXT-PROVIDER', state)
 
@@ -56,18 +58,23 @@ const AuthContextProvider = ({ children }: { children: ReactElement }) => {
       });
       console.log(response.data)
       const { accessToken } = response.data
-      const { profileId, username } = jwtDecode(accessToken) as TokenJWT
+      const { profileId, username } = await jwtDecode(accessToken) as TokenJWT
 
-     /*  await SecureStore.setItemAsync("token", accessToken)
-      await SecureStore.setItemAsync("username", username)
-      await SecureStore.setItemAsync("profileId", profileId) */
+      Promise.all(
+        Object.entries(
+          Object.fromEntries([["accessToken", accessToken], ["profileId", profileId], ["username", username ]]))
+          .map(([k, v]) => setItemAsync(k, v)))
+      
+      /* await setItemAsync("token", accessToken)
+      await setItemAsync("username", username)
+      await setItemAsync("profileId", profileId) */
 
       dispatch({ type: 'login', payload: { profileId, token: accessToken, username } })
     } catch (err: any) {
-      console.log('ERR_LOGIN', err.response)
+      console.log('ERR_LOGIN', err.response.data)
       dispatch({
         type: 'add_error',
-        payload: 'We have a problem on login, try again'
+        payload: err.response.data.error
       })
     }
   }
@@ -85,11 +92,11 @@ const AuthContextProvider = ({ children }: { children: ReactElement }) => {
       })
 
       Navigate('Login')
-    } catch (error: any) {
-
+    } catch (err: any) {
+      console.log('ERR_LOGIN', err.response.data)
       dispatch({
         type: 'add_error',
-        payload: 'Something go wrong, please try again'
+        payload: err.response.data.error
       })
     }
   }
@@ -98,16 +105,18 @@ const AuthContextProvider = ({ children }: { children: ReactElement }) => {
       type: 'clearErrMsg'
     })
   }
-  const tryLocalLogin = () => {
+  const tryLocalLogin = async () => {
     let items = {
       token: null,
       user: null,
       profile: null
     }
     try {
-
-    } catch (error) {
-
+      const logs = await Promise.all(['profileId', 'accessToken', 'username'].map(async (promise) => await getItemAsync(promise)))
+      dispatch({type:'login', payload: {profileId: logs[0], token: logs[1], username: logs[2]}})
+      console.log('TRYLOGINLOCAL', logs[0], logs[1], logs[2])
+    } catch (err: any) {
+      console.log("error_trylocalogin", err)
     }
   }
   return (
@@ -115,7 +124,8 @@ const AuthContextProvider = ({ children }: { children: ReactElement }) => {
       ...state,
       login,
       signup,
-      clearErrorMessage
+      clearErrorMessage,
+      tryLocalLogin
     }}>
       {children}
     </AuthContext.Provider >

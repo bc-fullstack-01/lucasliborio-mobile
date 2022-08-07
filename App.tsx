@@ -12,35 +12,40 @@ import ProfileScreen from './screens/profile/ProfileScreen';
 import ProfilesScreen from './screens/profile/ProfilesScreen';
 import CreatePostsScreen from './screens/post/create-post-screen';
 import { AuthContext, AuthContextProvider } from './context/auth-context';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { navigationRef } from './root-navigation';
 const Stack = createNativeStackNavigator()
 const Tab = createBottomTabNavigator()
 
 
 function App() {
-  const { token} = useContext(AuthContext)
-  console.log('APP COMPONENT', token)
+  const { token, tryLocalLogin, isLoading } = useContext(AuthContext)
+  console.log(isLoading)
+  useEffect(() => {
+    tryLocalLogin()
+  }, [])
   return (
     <SafeAreaProvider>
       <StatusBar />
       <NavigationContainer ref={navigationRef}>
-        {!token ? (
-          <Stack.Navigator
-            screenOptions={({ route, navigation }) => ({
-              headerShown: false
-            })}
-          >
-            <Stack.Screen name="Login" component={LoginScreen} />
-            <Stack.Screen name="Register" component={SignupScreen} />
-          </Stack.Navigator>) : (
-          <Tab.Navigator>
-            <Tab.Screen name='Home' component={HomeScreen} />
-            <Tab.Screen name='Post' component={PostDetailScreen} />
-            <Tab.Screen name='Create Post' component={CreatePostsScreen} />
-            <Tab.Screen name='Profile' component={ProfileScreen} />
-            <Tab.Screen name='Profiles' component={ProfilesScreen} />
-          </Tab.Navigator>)
+        {isLoading ?
+          (null) :
+          !token ? (
+            <Stack.Navigator
+              screenOptions={({ route, navigation }) => ({
+                headerShown: false
+              })}
+            >
+              <Stack.Screen name="Login" component={LoginScreen} />
+              <Stack.Screen name="Register" component={SignupScreen} />
+            </Stack.Navigator>) : (
+            <Tab.Navigator>
+              <Tab.Screen name='Home' component={HomeScreen} />
+              <Tab.Screen name='Post' component={PostDetailScreen} />
+              <Tab.Screen name='Create Post' component={CreatePostsScreen} />
+              <Tab.Screen name='Profile' component={ProfileScreen} />
+              <Tab.Screen name='Profiles' component={ProfilesScreen} />
+            </Tab.Navigator>)
         }
       </NavigationContainer>
     </SafeAreaProvider>
