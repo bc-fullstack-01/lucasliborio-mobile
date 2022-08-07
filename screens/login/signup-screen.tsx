@@ -12,12 +12,13 @@ export interface SignupProps {
 }
 
 export default function SignupScreen({ navigation }: any) {
-  const { signup } = useContext(AuthContext)
+  const { signup, clearErrorMessage } = useContext(AuthContext)
 
   const handleSubmit = async ({ username, email, password, passwordConfirmation }: SignupProps) => {
+    clearErrorMessage()
     try {
       await signup({ username, email, password, passwordConfirmation })
-      navigation.navigate('Login')
+      
     } catch (error) {
       console.log(error)
     }
@@ -26,7 +27,6 @@ export default function SignupScreen({ navigation }: any) {
     <View style={style.container}>
       <AuthForm
         handleSubmit={handleSubmit}
-        title=""
         formArr={[{
           label: 'Username',
           name: 'username'
