@@ -19,7 +19,8 @@ const Tab = createBottomTabNavigator()
 
 
 function App() {
-  const { token } = useContext(AuthContext)
+  const { token} = useContext(AuthContext)
+  console.log('APP COMPONENT', token)
   return (
     <SafeAreaProvider>
       <StatusBar />
@@ -28,7 +29,8 @@ function App() {
           <Stack.Navigator
             screenOptions={({ route, navigation }) => ({
               headerShown: false
-            })}>
+            })}
+          >
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="Register" component={SignupScreen} />
           </Stack.Navigator>) : (

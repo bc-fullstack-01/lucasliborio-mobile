@@ -45,6 +45,7 @@ const AuthContext = createContext({} as IAuthContext)
 const AuthContextProvider = ({ children }: { children: ReactElement }) => {
   const defaultValue = { token: null, username: null, profileId: null }
   const [state, dispatch] = useReducer(reducer, defaultValue)
+  console.log('CONTEXT-PROVIDER', state)
 
   const login = async ({ email, password }: LoginProps) => {
     try {
@@ -57,13 +58,13 @@ const AuthContextProvider = ({ children }: { children: ReactElement }) => {
       const { accessToken } = response.data
       const { profileId, username } = jwtDecode(accessToken) as TokenJWT
 
-      await SecureStore.setItemAsync("token", accessToken)
+     /*  await SecureStore.setItemAsync("token", accessToken)
       await SecureStore.setItemAsync("username", username)
-      await SecureStore.setItemAsync("profileId", profileId)
+      await SecureStore.setItemAsync("profileId", profileId) */
 
       dispatch({ type: 'login', payload: { profileId, token: accessToken, username } })
     } catch (err: any) {
-      console.log(err.response)
+      console.log('ERR_LOGIN', err.response)
       dispatch({
         type: 'add_error',
         payload: 'We have a problem on login, try again'
