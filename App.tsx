@@ -13,41 +13,45 @@ import ProfilesScreen from './screens/profile/ProfilesScreen';
 import CreatePostsScreen from './screens/post/create-post-screen';
 import { AuthContext, AuthContextProvider } from './context/auth-context';
 import { useContext } from 'react';
-
+import { navigationRef } from './root-navigation';
 const Stack = createNativeStackNavigator()
 const Tab = createBottomTabNavigator()
 
 
-export default function App() {
+function App() {
   const { token } = useContext(AuthContext)
-  console.log(token)
   return (
     <SafeAreaProvider>
       <StatusBar />
-      <AuthContextProvider>
-        <NavigationContainer>
-          {!token ? (
-            <Stack.Navigator
-              screenOptions={({ route, navigation }) => ({
-                headerShown: false
-              })}>
-              <Stack.Screen name="Login" component={LoginScreen} />
-              <Stack.Screen name="Register" component={SignupScreen} />
-            </Stack.Navigator>) : (
-            <Tab.Navigator>
-              <Tab.Screen name='Home' component={HomeScreen} />
-              <Tab.Screen name='Post' component={PostDetailScreen} />
-              <Tab.Screen name='Create Post' component={CreatePostsScreen} />
-              <Tab.Screen name='Profile' component={ProfileScreen} />
-              <Tab.Screen name='Profiles' component={ProfilesScreen} />
-            </Tab.Navigator>)
-          }
-        </NavigationContainer>
-      </AuthContextProvider>
+      <NavigationContainer ref={navigationRef}>
+        {!token ? (
+          <Stack.Navigator
+            screenOptions={({ route, navigation }) => ({
+              headerShown: false
+            })}>
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="Register" component={SignupScreen} />
+          </Stack.Navigator>) : (
+          <Tab.Navigator>
+            <Tab.Screen name='Home' component={HomeScreen} />
+            <Tab.Screen name='Post' component={PostDetailScreen} />
+            <Tab.Screen name='Create Post' component={CreatePostsScreen} />
+            <Tab.Screen name='Profile' component={ProfileScreen} />
+            <Tab.Screen name='Profiles' component={ProfilesScreen} />
+          </Tab.Navigator>)
+        }
+      </NavigationContainer>
     </SafeAreaProvider>
   );
 }
 
+export default () => {
+  return (
+    <AuthContextProvider>
+      <App />
+    </AuthContextProvider>
+  )
+}
 const styles = StyleSheet.create({
   container: {
     flex: 1,

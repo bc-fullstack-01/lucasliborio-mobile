@@ -1,4 +1,5 @@
 
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React, { useContext, useReducer } from "react";
 import { View, StyleSheet, Text, TouchableOpacity, Alert } from "react-native";
 import AuthForm from "../../components/form/auth-form";
@@ -10,21 +11,21 @@ export interface LoginProps {
 }
 
 export default function LoginScreen({ navigation }: any) {
-  const { login, token } = useContext(AuthContext)
+  const { login, clearErrorMessage } = useContext(AuthContext)
 
+  
   const handleSubmit = async ({ email, password }: LoginProps) => {
+    clearErrorMessage()
     try {
-      await login({email, password})
-      navigation.navigate('Home')
+      await login({ email, password })
     } catch (error) {
-      
+      console.log(error)
     }
   }
   return (
     <View style={style.container}>
       <AuthForm
         handleSubmit={handleSubmit}
-        title=""
         formArr={[{
           label: 'Email',
           name: 'email'
@@ -45,7 +46,7 @@ const style = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "stretch",
     marginBottom: 150
   }
 })
