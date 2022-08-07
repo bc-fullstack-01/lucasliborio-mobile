@@ -9,11 +9,15 @@ export interface LoginProps {
   email: string,
   password: string
 }
+type NavigationProp = {
+  navigation: NativeStackNavigationProp<any, any>
 
-export default function LoginScreen({ navigation }: any) {
+}
+
+export default function LoginScreen({ navigation }: NavigationProp) {
   const { login, clearErrorMessage } = useContext(AuthContext)
 
-  
+
   const handleSubmit = async ({ email, password }: LoginProps) => {
     clearErrorMessage()
     try {
@@ -46,7 +50,6 @@ const style = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "stretch",
     marginBottom: 150
   }
 })

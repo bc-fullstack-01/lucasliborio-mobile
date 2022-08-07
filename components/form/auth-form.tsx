@@ -43,15 +43,11 @@ export default function AuthForm({ formArr, handleSubmit, navigation, btnText, l
       dispatch({ type: 'changeState', payload: { name, value } })
     }
   }
-
-  console.log(state)
   return (
     <>
       <View style={style.container}>
-        <Spacer>
-          <Image source={logo} style={style.image} />
-        </Spacer>
-
+        <Image source={logo} style={style.image} />
+        <Spacer />
         {formArr.map((inputs, index) => (
           <CustomInput
             key={index}
@@ -60,21 +56,19 @@ export default function AuthForm({ formArr, handleSubmit, navigation, btnText, l
             handleChangeState={handleChangeState(inputs.name)}
           />
         ))}
+        <Spacer>
+          <Button
+            title={btnText}
+            onPress={() => handleSubmit(state)}
+          />
+        </Spacer>
       </View>
-      <Button
-        title={btnText}
-        onPress={() => handleSubmit(state)}
-      />
-      <Spacer />
       <TouchableOpacity
         onPress={() => { clearErrorMessage(); navigation.navigate(to) }}>
         <Text style={style.link}>{linkText}</Text>
       </TouchableOpacity>
-      { errMessage && (
-        <Spacer>
-          <Text style={style.errorText}>{errMessage}</Text>
-        </Spacer>
-      )}
+      <Spacer />
+      {errMessage && (<Text style={style.errorText}>{errMessage}</Text>)}
 
     </>
   )
@@ -82,8 +76,10 @@ export default function AuthForm({ formArr, handleSubmit, navigation, btnText, l
 
 const style = StyleSheet.create({
   container: {
+    display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: "center",
+    marginTop: 100
   },
   errorText: {
     textAlign: 'center',
@@ -95,6 +91,7 @@ const style = StyleSheet.create({
     marginBottom: 5
   },
   link: {
+    textAlign: 'center',
     color: 'blue'
   }
 })

@@ -12,6 +12,7 @@ export default function Spacer({ children }: Props) {
 
 const styles = StyleSheet.create({
   spacer: {
-    marginBottom: 80
+    marginBottom: 80,
+    width: '80%'
   }
 })
