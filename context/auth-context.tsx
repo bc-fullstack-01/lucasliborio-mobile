@@ -74,7 +74,7 @@ const AuthContextProvider = ({ children }: { children: ReactElement }) => {
       console.log('ERR_LOGIN', err.response.data)
       dispatch({
         type: 'add_error',
-        payload: err.response.data.error
+        payload: "something goes wrong on login, please try again"
       })
     }
   }
@@ -96,7 +96,7 @@ const AuthContextProvider = ({ children }: { children: ReactElement }) => {
       console.log('ERR_LOGIN', err.response.data)
       dispatch({
         type: 'add_error',
-        payload: err.response.data.error
+        payload: "something goes wrong on signup, please try again"
       })
     }
   }
@@ -116,6 +116,7 @@ const AuthContextProvider = ({ children }: { children: ReactElement }) => {
       dispatch({type:'login', payload: {profileId: logs[0], token: logs[1], username: logs[2]}})
       console.log('TRYLOGINLOCAL', logs[0], logs[1], logs[2])
     } catch (err: any) {
+      
       console.log("error_trylocalogin", err)
     }
   }
