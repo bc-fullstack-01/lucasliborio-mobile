@@ -14,13 +14,13 @@ import { useContext, useEffect } from 'react';
 import { navigationRef } from './root-navigation';
 import { Home } from './screens/home/home-navigation-screnn';
 
+import { PostContextProvider } from './context/post-context';
 const Stack = createNativeStackNavigator()
 const Tab = createBottomTabNavigator()
 
 
 function App() {
   const { token, tryLocalLogin, isLoading } = useContext(AuthContext)
-  console.log(isLoading)
   useEffect(() => {
     tryLocalLogin()
   }, [])
@@ -71,7 +71,9 @@ function App() {
 export default () => {
   return (
     <AuthContextProvider>
-      <App />
+      <PostContextProvider>
+        <App />
+      </PostContextProvider>
     </AuthContextProvider>
   )
 }

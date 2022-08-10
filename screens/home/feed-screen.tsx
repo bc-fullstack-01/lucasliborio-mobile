@@ -1,20 +1,30 @@
 import { getItemAsync } from "expo-secure-store";
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { PostList } from "../../components/post-list";
+import { PostContext } from "../../context/post-context";
 
 export default function FeedScreen() {
-  (async () => {
-    console.log('HOMESCREEN', await getItemAsync('accessToken'))
-  })()
-  
+  const { posts, getFeed, errorMessage } = useContext(PostContext)
+  console.log("Error MSG", errorMessage)
+  console.log(posts)
+  useEffect(() => {
+    getFeed()
+  }, [])
   return (
     <View>
-      <PostList/>
+      {errorMessage
+        ? (<Text>{errorMessage}</Text>)
+        : (
+          <PostList
+            posts={posts}
+          />
+        )}
+
     </View>
   )
 }
 
 const style = StyleSheet.create({
-  
+
 })

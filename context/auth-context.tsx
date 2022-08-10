@@ -30,7 +30,7 @@ interface Action {
 const reducer = (state: any, action: Action) => {
   switch (action.type) {
     case "login":
-      return { ...state, ...action.payload, errMessage: null, isLoading: false}
+      return { ...state, ...action.payload, errMessage: null, isLoading: false }
     case "signup":
       return { ...state, errMessage: null }
     case "add_error":
@@ -45,9 +45,9 @@ const reducer = (state: any, action: Action) => {
 const AuthContext = createContext({} as IAuthContext)
 
 const AuthContextProvider = ({ children }: { children: ReactElement }) => {
-  const defaultValue = { token: null, username: null, profileId: null, isLoading: true}
+  const defaultValue = { token: null, username: null, profileId: null, isLoading: true }
   const [state, dispatch] = useReducer(reducer, defaultValue)
-  console.log('CONTEXT-PROVIDER', state)
+
 
   const login = async ({ email, password }: LoginProps) => {
     try {
@@ -56,15 +56,15 @@ const AuthContextProvider = ({ children }: { children: ReactElement }) => {
         email,
         password
       });
-      console.log(response.data)
+
       const { accessToken } = response.data
       const { profileId, username } = await jwtDecode(accessToken) as TokenJWT
 
       Promise.all(
         Object.entries(
-          Object.fromEntries([["accessToken", accessToken], ["profileId", profileId], ["username", username ]]))
+          Object.fromEntries([["accessToken", accessToken], ["profileId", profileId], ["username", username]]))
           .map(([k, v]) => setItemAsync(k, v)))
-      
+
       /* await setItemAsync("token", accessToken)
       await setItemAsync("username", username)
       await setItemAsync("profileId", profileId) */
@@ -113,11 +113,11 @@ const AuthContextProvider = ({ children }: { children: ReactElement }) => {
     }
     try {
       const logs = await Promise.all(['profileId', 'accessToken', 'username'].map(async (promise) => await getItemAsync(promise)))
-      dispatch({type:'login', payload: {profileId: logs[0], token: logs[1], username: logs[2]}})
-      console.log('TRYLOGINLOCAL', logs[0], logs[1], logs[2])
+      dispatch({ type: 'login', payload: { profileId: logs[0], token: logs[1], username: logs[2] } })
+
     } catch (err: any) {
-      
-      console.log("error_trylocalogin", err)
+
+
     }
   }
   return (

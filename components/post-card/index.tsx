@@ -1,8 +1,10 @@
 import { MaterialIcons } from "@expo/vector-icons"
 import { Card } from "@rneui/base"
-import React from "react"
+import React, { useContext } from "react"
 import { StyleSheet, TouchableOpacity, View, Text } from "react-native"
+import { AuthContext } from "../../context/auth-context"
 import { Post } from "../../models/post-model"
+import ProfileScreen from "../../screens/profile/ProfileScreen"
 import { CommentButton } from "../action-buttons/comment"
 import { FavoriteButton } from "../action-buttons/favorite"
 import { CustomAvatar } from "../custom-avatar"
@@ -11,6 +13,7 @@ interface Props {
 }
 
 export const PostCard = ({ post }: Props) => {
+  const { profileId } = useContext(AuthContext)
   return (
     <TouchableOpacity>
       <Card>
@@ -26,8 +29,13 @@ export const PostCard = ({ post }: Props) => {
         <Text style={style.descriptionStyle}>{post.description}</Text>
         <Card.Divider />
         <View style={style.actionContainer}>
-          <FavoriteButton liked={true} />
-          <CommentButton />
+          <FavoriteButton
+            postId={post._id}
+            liked={post.likes.includes(profileId)}
+            count={post.likes.length} />
+          <CommentButton
+            count={post.comments.length}
+          />
         </View>
       </Card>
     </TouchableOpacity>
