@@ -5,12 +5,11 @@ import { PostList } from "../../components/post-list";
 import { PostContext } from "../../context/post-context";
 
 export default function FeedScreen() {
-  const { posts, getFeed, errorMessage } = useContext(PostContext)
-  console.log("Error MSG", errorMessage)
-  console.log(posts)
+  const { posts, getFeed, errorMessage, page} = useContext(PostContext)
   useEffect(() => {
-    getFeed()
-  }, [])
+    getFeed(page)
+
+  }, [page])
   return (
     <View>
       {errorMessage

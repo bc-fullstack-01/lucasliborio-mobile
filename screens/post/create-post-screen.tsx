@@ -1,14 +1,12 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
+import { CreatePostForm } from "../../components/form/create-post-form";
 
 export default function CreatePostScreen() {
   return (
-    <View>
-      <Text>Create Posts Screen</Text>
-    </View>
+    <>
+      <CreatePostForm/>
+    </>  
   )
 }
 
-const style = StyleSheet.create({
-  
-})

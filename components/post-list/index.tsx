@@ -1,20 +1,26 @@
 
-import { FlatList, StyleSheet, TouchableOpacity, View, Text } from "react-native"
+import { FlatList, RefreshControl, StyleSheet, View } from "react-native"
 import { Post } from "../../models/post-model"
 
 import { PostCard } from "../post-card"
+import React, { useContext } from "react"
+import { PostContext } from "../../context/post-context"
 
 interface Props {
   posts: Post[]
 }
 
 export const PostList = ({ posts }: Props) => {
-    
+  const { loadMore, onRefresh, isLoading} = useContext(PostContext)
+  console.log(posts.length)
   return (
     <View>
       <FlatList
+        refreshControl={<RefreshControl refreshing={isLoading} onRefresh={onRefresh}></RefreshControl>}
         data={posts}
         keyExtractor={({ _id }) => _id}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.2}
         renderItem={({ item }) => (
           <PostCard
             post={item}
