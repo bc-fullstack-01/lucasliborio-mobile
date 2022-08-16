@@ -1,22 +1,25 @@
-import { getItemAsync } from "expo-secure-store";
+import { useIsFocused } from "@react-navigation/native";
 import React, { useContext, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { PostList } from "../../components/post-list";
 import { PostContext } from "../../context/post-context";
 
-export default function FeedScreen({navigation}: {navigation: any}) {
-  const { posts, getFeed, errorMessage, page} = useContext(PostContext)
+export default function FeedScreen({ navigation }: { navigation: any }) {
+  const { posts, getFeed, errorMessage, page, clearPosts } = useContext(PostContext)
+  const isFocused = useIsFocused();
   useEffect(() => {
-    getFeed(page)
-
-  }, [page])
+    isFocused && getFeed(page)
+    return () => {
+      clearPosts()
+    }
+  }, [page, isFocused])
   return (
     <View>
       {errorMessage
         ? (<Text>{errorMessage}</Text>)
         : (
           <PostList
-          navigation={navigation}
+            navigation={navigation}
             posts={posts}
           />
         )}

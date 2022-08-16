@@ -20,12 +20,12 @@ interface IPostContext {
   page: number
   errorMessage: string | null
   isLoading: boolean
+  clearPosts: () => void
   getFeed: (page: number) => Promise<any>
   loadMore: () => void
   resetFeed: () => void
   onRefresh: () => void
   createPost: (form: CreatePostProps) => Promise<void>
-
 
 }
 const reducer = (state: any, actions: Action) => {
@@ -38,6 +38,8 @@ const reducer = (state: any, actions: Action) => {
       return { ...state, isLoading: false, posts: [...posts, ...actions.payload], }
     case "loadmore":
       return { ...state, page: page + 1 }
+    case "clearPosts":
+      return { ...state, posts:[] }
     default:
       break;
   }
@@ -81,10 +83,10 @@ export const PostContextProvider = ({ children }: { children: ReactElement }) =>
     data.append("title", title)
     data.append("description", description)
     if (image) {
-     let name = uri.split('/').pop();
-     let match = /\.(\w+)$/.exec(name);
-     let type = match ? `image/${match[1]}` : `image`;
-      data.append("image", Object.assign(image, {name, type }))
+      let name = uri.split('/').pop();
+      let match = /\.(\w+)$/.exec(name);
+      let type = match ? `image/${match[1]}` : `image`;
+      data.append("image", Object.assign(image, { name, type }))
     }
     try {
       await server.post("/post/new", data, {
@@ -98,7 +100,9 @@ export const PostContextProvider = ({ children }: { children: ReactElement }) =>
       console.log(err.response)
     }
   }
- 
+  const clearPosts = () => {
+    dispatch({ type: 'clearPosts' })
+  }
   return (
     <PostContext.Provider
       value={{
@@ -106,7 +110,8 @@ export const PostContextProvider = ({ children }: { children: ReactElement }) =>
         getFeed,
         loadMore,
         onRefresh,
-        createPost
+        createPost,
+        clearPosts
       }}
     >
       {children}

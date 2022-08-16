@@ -7,7 +7,7 @@ import LoginScreen from './screens/login/login-screen';
 import SignupScreen from './screens/login/signup-screen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialIcons } from '@expo/vector-icons'
-import ProfileScreen from './screens/profile/ProfileScreen';
+import ProfileScreen from './screens/profile/log-out';
 import ProfilesScreen from './screens/profile/profile-screen';
 import { AuthContext, AuthContextProvider } from './context/auth-context';
 import { useContext, useEffect } from 'react';

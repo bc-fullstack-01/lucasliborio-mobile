@@ -7,7 +7,6 @@ interface Props {
   count: number
 }
 
-
 export const CommentButton = ({count}: Props) => {
 
   return (

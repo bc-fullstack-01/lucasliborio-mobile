@@ -13,9 +13,10 @@ interface Props {
 }
 export default function PostDetailScreen({ route }: Props) {
   const { postId } = route.params
-  console.log(postId)
+  
   const { token } = useContext(AuthContext)
   const [post, setPost] = useState<Post>()
+
   useEffect(() => {
     const getPostById = async () => {
       try {
@@ -25,12 +26,12 @@ export default function PostDetailScreen({ route }: Props) {
           }
         })
         setPost(() => response.data)
-        console.log("AQ", response.data)
       } catch (error: any) {
         console.log(error.response)
       }
     }
     getPostById()
+    
   }, [])
 
   return (
@@ -40,7 +41,9 @@ export default function PostDetailScreen({ route }: Props) {
         post={post}
       />}
       <CommentList
-        comments={post?.comments}
+        postId={postId}
+        comments={post?.comments as unknown as Comment[]}
+        onHandleComment={setPost}
       />
     </>
   )

@@ -3,7 +3,7 @@ import server from "../api/server";
 import jwtDecode from 'jwt-decode'
 import { SignupProps } from "../screens/login/signup-screen";
 import { LoginProps } from "../screens/login/login-screen";
-import { getItemAsync, setItemAsync } from 'expo-secure-store'
+import { deleteItemAsync, getItemAsync, setItemAsync } from 'expo-secure-store'
 import Navigate from "../root-navigation";
 
 
@@ -17,6 +17,7 @@ interface IAuthContext {
   login: ({ email, password }: LoginProps) => Promise<void>
   signup: ({ username, email, password, passwordConfirmation }: SignupProps) => Promise<void>
   tryLocalLogin(): any
+  logout: () => any
 }
 interface TokenJWT {
   profileId: string,
@@ -37,6 +38,8 @@ const reducer = (state: any, action: Action) => {
       return { ...state, errMessage: action.payload }
     case "clearErrMsg":
       return { ...state, errMessage: null }
+    case "logout":
+      return { ...state, token: null, username: null, profileId: null }
     default:
       return { ...state }
   }
@@ -120,13 +123,20 @@ const AuthContextProvider = ({ children }: { children: ReactElement }) => {
 
     }
   }
+  const logout = async () => {
+    await deleteItemAsync('accessToken')
+    await deleteItemAsync('profileId')
+    await deleteItemAsync('username')
+    dispatch({ type: 'logout' })
+  }
   return (
     <AuthContext.Provider value={{
       ...state,
       login,
       signup,
       clearErrorMessage,
-      tryLocalLogin
+      tryLocalLogin,
+      logout
     }}>
       {children}
     </AuthContext.Provider >
