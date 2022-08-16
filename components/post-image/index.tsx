@@ -35,7 +35,7 @@ export const ExpoImagePicker = ({ onFileLoaded }: Props) => {
           title="Anexar Imagem"
           onPress={pickImage} />
         {image && (
-          <View style={style.imageContainer}>8u
+          <View style={style.imageContainer}>
             <Image source={{ uri: image }} style={{ width: 300, height: 200 }} />
           </View>
         )}
@@ -44,10 +44,6 @@ export const ExpoImagePicker = ({ onFileLoaded }: Props) => {
   )
 }
 const style = StyleSheet.create({
-  imageStyle: {
-    width: 720,
-    heitgh: 540
-  },
   imageContainer: {
     alignItems: "center",
     justifyContent: 'center'

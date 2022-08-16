@@ -7,13 +7,16 @@ import { CommentButton } from "../action-buttons/comment"
 import { FavoriteButton } from "../action-buttons/favorite"
 import { CustomAvatar } from "../custom-avatar"
 interface Props {
-  post: Post
+  post: Post,
+  handleClick: any
 }
 
-export const PostCard = ({ post }: Props) => {
+export const PostCard = ({ post, handleClick }: Props) => {
   const { profileId } = useContext(AuthContext)
   return (
-    <TouchableOpacity>
+    <TouchableOpacity
+    onPress={() => {handleClick()}}
+    >
       <Card>
         <View style={style.cardHeaderStyle}>
           <CustomAvatar

@@ -4,7 +4,7 @@ import { View, Text, StyleSheet } from "react-native";
 import { PostList } from "../../components/post-list";
 import { PostContext } from "../../context/post-context";
 
-export default function FeedScreen() {
+export default function FeedScreen({navigation}: {navigation: any}) {
   const { posts, getFeed, errorMessage, page} = useContext(PostContext)
   useEffect(() => {
     getFeed(page)
@@ -16,6 +16,7 @@ export default function FeedScreen() {
         ? (<Text>{errorMessage}</Text>)
         : (
           <PostList
+          navigation={navigation}
             posts={posts}
           />
         )}

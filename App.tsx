@@ -8,13 +8,14 @@ import SignupScreen from './screens/login/signup-screen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialIcons } from '@expo/vector-icons'
 import ProfileScreen from './screens/profile/ProfileScreen';
-import ProfilesScreen from './screens/profile/ProfilesScreen';
+import ProfilesScreen from './screens/profile/profile-screen';
 import { AuthContext, AuthContextProvider } from './context/auth-context';
 import { useContext, useEffect } from 'react';
 import { navigationRef } from './root-navigation';
 import { Home } from './screens/home/home-navigation-screnn';
 
 import { PostContextProvider } from './context/post-context';
+import { ProfileContextProvider } from './context/profile-context';
 const Stack = createNativeStackNavigator()
 const Tab = createBottomTabNavigator()
 
@@ -72,7 +73,9 @@ export default () => {
   return (
     <AuthContextProvider>
       <PostContextProvider>
+        <ProfileContextProvider>
         <App />
+        </ProfileContextProvider>
       </PostContextProvider>
     </AuthContextProvider>
   )

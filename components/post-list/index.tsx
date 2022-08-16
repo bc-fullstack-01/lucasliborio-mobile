@@ -6,13 +6,14 @@ import { PostCard } from "../post-card"
 import React, { useContext } from "react"
 import { PostContext } from "../../context/post-context"
 
+
 interface Props {
   posts: Post[]
+  navigation: any
 }
 
-export const PostList = ({ posts }: Props) => {
-  const { loadMore, onRefresh, isLoading} = useContext(PostContext)
-  console.log(posts.length)
+export const PostList = ({ posts, navigation }: Props) => {
+  const { loadMore, onRefresh, isLoading } = useContext(PostContext)
   return (
     <View>
       <FlatList
@@ -23,6 +24,7 @@ export const PostList = ({ posts }: Props) => {
         onEndReachedThreshold={0.2}
         renderItem={({ item }) => (
           <PostCard
+            handleClick={() => navigation.navigate('PostDetail', { postId: item._id })}
             post={item}
           />
         )}

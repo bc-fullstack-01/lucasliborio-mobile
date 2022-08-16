@@ -2,6 +2,7 @@ import { getItemAsync } from "expo-secure-store";
 import React, { Children, createContext, ReactElement, useContext, useReducer } from "react";
 import server from "../api/server";
 import { Post } from "../models/post-model";
+import Navigate from "../root-navigation";
 import { AuthContext } from "./auth-context";
 
 interface Action {
@@ -11,7 +12,7 @@ interface Action {
 interface CreatePostProps {
   title: string,
   description: string,
-  image: any
+  image?: any
 }
 
 interface IPostContext {
@@ -21,8 +22,9 @@ interface IPostContext {
   isLoading: boolean
   getFeed: (page: number) => Promise<any>
   loadMore: () => void
-  resetFeed:  () => void
+  resetFeed: () => void
   onRefresh: () => void
+  createPost: (form: CreatePostProps) => Promise<void>
 
 
 }
@@ -30,7 +32,7 @@ const reducer = (state: any, actions: Action) => {
   const { page, posts } = state
   switch (actions.type) {
     case 'refresh': {
-      return {...state, page: 0, posts: []}
+      return { ...state, page: 0, posts: [] }
     }
     case "show_posts":
       return { ...state, isLoading: false, posts: [...posts, ...actions.payload], }
@@ -69,18 +71,43 @@ export const PostContextProvider = ({ children }: { children: ReactElement }) =>
     dispatch({ type: 'loadmore' })
   }
   const onRefresh = async () => {
-    dispatch({type: 'refresh'})
+    dispatch({ type: 'refresh' })
     await getFeed()
   }
   const createPost = async ({ title, description, image }: CreatePostProps) => {
     const token = await getItemAsync('accessToken')
+    const { uri } = image
     const data = new FormData();
-
+    data.append("title", title)
+    data.append("description", description)
+    if (image) {
+     let name = uri.split('/').pop();
+     let match = /\.(\w+)$/.exec(name);
+     let type = match ? `image/${match[1]}` : `image`;
+      data.append("image", Object.assign(image, {name, type }))
+    }
+    try {
+      await server.post("/post/new", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data"
+        }
+      })
+      Navigate('Feed')
+    } catch (err: any) {
+      console.log(err.response)
+    }
   }
-
+ 
   return (
     <PostContext.Provider
-      value={{ ...state, getFeed, loadMore, onRefresh}}
+      value={{
+        ...state,
+        getFeed,
+        loadMore,
+        onRefresh,
+        createPost
+      }}
     >
       {children}
     </PostContext.Provider>)
